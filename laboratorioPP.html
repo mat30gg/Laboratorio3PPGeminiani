@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #form-datos{
+            width: max-content;
+            border: solid black;
+        }
+    </style>
+    <title>Primer Parcial Laboratorio 3 Mateo Geminiani</title>
+</head>
+<body>
+
+    <div>
+        <form id="form-datos">
+            <b>Form datos</b><br/>
+            <label for="filtrar-por">Filtrar por: </label>
+            <select id="filtrar-por">
+                <option value="todos">Todos</option>
+                <option value="heroes">Heroes</option>
+                <option value="villanos">Villanos</option>
+            </select><br/>
+            <label for="edad-promedio">Calcular edad promedio: </label>
+            <input type="text" id="edad-promedio" disabled/>
+            <input type="button" value="Calcular" onclick=" document.getElementById('edad-promedio').value = calcularPromedio() "/><br/>
+            <label>Mostrar columnas:</label><br/>
+            <input type="checkbox" value="mostrar-id"/>ID
+            <input type="checkbox" value="mostrar-nombre"/>Nombre
+            <input type="checkbox" value="mostrar-apellido" />Apellido
+            <input type="checkbox" value="mostrar-edad" />Edad
+            <input type="checkbox" value="mostrar-alterego" />AlterEgo
+            <input type="checkbox" value="mostrar-ciudad" />Ciudad
+            <input type="checkbox" value="mostrar-publicado" />Publicado
+            <input type="checkbox" value="mostrar-enemigo" />Enemigo
+            <input type="checkbox" value="mostrar-robos" />Robos
+            <input type="checkbox" value="mostrar-asesinatos" />Asesinatos
+            <br/>
+            <table>
+                <thead>
+                    <th><button onclick="" id="columna-id">ID</button></th>
+                    <th><button onclick="" id="columna-nombre">Nombre</button></th>
+                    <th><button onclick="" id="columna-apellido">Apellido</button></th>
+                    <th><button onclick="" id="columna-edad">Edad</button></th>
+                    <th><button onclick="" id="columna-alterego">AlterEgo</button></th>
+                    <th><button onclick="" id="columna-ciudad">Ciudad</button></th>
+                    <th><button onclick="" id="columna-fpublicacion">Publicado</button></th>
+                    <th><button onclick="" id="columna-enemigo">Enemigo</button></th>
+                    <th><button onclick="" id="columna-robos">Robos</button></th>
+                    <th><button onclick="" id="columna-asesinatos">Asesinatos</button></th>
+                </thead>
+                <tbody id="tabla-datos">
+                    
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <script>
+        class Persona{
+            constructor(id, nombre, apellido, edad){
+                if(id != null) {
+                    this.id = id;
+                }
+                if(nombre != null) {
+                    this.nombre = nombre;
+                }
+                if(apellido != null) {
+                    this.apellido = apellido;
+                }
+                if(edad != null) {
+                    this.edad = edad;
+                }
+            }
+        }
+
+        class Heroe extends Persona {
+            constructor(id, nombre, apellido, edad, alterego, ciudad, publicado) {
+                super(id, nombre, apellido, edad);
+                if(alterego != null) {
+                    this.alterego = alterego;
+                }
+                if(ciudad != null) {
+                    this.ciudad = ciudad;
+                }
+                if(publicado != null && publicado > 1940) {
+                    this.publicado = publicado;
+                }
+            }
+        }
+
+        class Villano extends Persona {
+            constructor(id, nombre, apellido, edad, enemigo, robos, asesinatos) {
+                super(id, nombre, apellido, edad);
+                if(enemigo != null) {
+                    this.enemigo = enemigo;
+                }
+                if(robos != null && robos > 0) {
+                    this.robos = robos;
+                }
+                if(asesinatos != null && asesinatos > 0) {
+                    this.asesinatos = asesinatos;
+                }
+            }
+        }
+
+        function arrayJsonObjeto( stringJson ) {
+            let arrayObjetos = JSON.parse( stringJson );
+            let arrayReturn = [];
+            arrayObjetos.forEach( elemento => {
+                if(elemento.alterego != null) {
+                    arrayReturn.push( new Heroe( elemento ));
+                } else {
+                    if(elemento.enemigo != null) {
+                        arrayReturn.push( new Villano(elemento) );
+                    }
+                }
+            });
+            return arrayReturn;
+        }
+
+        function calcularPromedio() {
+            let suma = 0;
+            arrayPersonajes.forEach( a => suma += a['id']['edad']);
+            return suma / arrayPersonajes.length;
+        }
+
+        function imprimirTabla() {
+            Object.values(arrayPersonajes).forEach( filaDato => {
+                let fila = document.createElement('tr');
+                Object.values(filaDato).forEach( celdaDato => {
+                    Object.values(celdaDato).forEach( dato => {
+                        let celda = document.createElement('td');
+                        celda.appendChild( document.createTextNode( dato ) );
+                        fila.appendChild(celda)} );
+                } );
+                document.getElementById('tabla-datos').appendChild(fila); } );
+        }
+        let stringJson = '[{"id":1, "nombre":"Clark", "apellido":"Kent", "edad":45, "alterego":"Superman", "ciudad":"Metropolis","publicado":2002},{"id":2, "nombre":"Bruce", "apellido":"Wayne", "edad":35, "alterego":"Batman", "ciudad":"Gotica","publicado":20012},{"id":3, "nombre":"Bart", "apellido":"Alen", "edad":30, "alterego":"Flash", "ciudad":"Central","publicado":2017},{"id":4, "nombre":"Lex", "apellido":"Luthor", "edad":18, "enemigo":"Superman", "robos":500,"asesinatos":7},{"id":5, "nombre":"Harvey", "apellido":"Dent", "edad":20, "enemigo":"Batman", "robos":750,"asesinatos":2},{"id":666, "nombre":"Celina", "apellido":"kyle", "edad":23, "enemigo":"Batman", "robos":25,"asesinatos":1}]'
+        let arrayPersonajes = arrayJsonObjeto( stringJson );
+        imprimirTabla();
+    </script>
+</body>
+</html>
